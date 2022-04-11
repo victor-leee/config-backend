@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/victor-leee/config-backend/internal/config"
 	"gorm.io/driver/mysql"
@@ -22,6 +23,6 @@ func Init(cfg *config.Config) error {
 	return nil
 }
 
-func GetDatabase() *gorm.DB {
-	return gormDB
+func GetDatabase(ctx context.Context) *gorm.DB {
+	return gormDB.WithContext(ctx)
 }
