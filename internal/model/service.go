@@ -10,7 +10,7 @@ import (
 
 type Service struct {
 	Name string `gorm:"column:name"`
-	Key  string `gorm:"column:key"`
+	Key  string `gorm:"column:service_key"`
 }
 
 func (*Service) TableName() string {

@@ -1,0 +1,5 @@
+mysql:
+  ip: mysql
+  port: 3306
+  password: hihi
+  DBName: portal
