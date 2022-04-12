@@ -8,9 +8,11 @@ import (
 	"github.com/victor-leee/config-backend/internal/model"
 	"github.com/victor-leee/config-backend/internal/rpc/etcd"
 	"github.com/victor-leee/config-backend/internal/service"
+	"time"
 )
 
 func main() {
+	time.Sleep(3 * time.Second)
 	cfg, err := config.Init()
 	if err != nil {
 		logrus.Fatal(err)

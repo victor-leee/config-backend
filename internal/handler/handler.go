@@ -19,15 +19,28 @@ func (c *ConfigBackendServiceImpl) GetConfig(ctx context.Context, req *config_ba
 	resp := &config_backend.GetConfigResponse{
 		BaseResponse: &config_backend.BaseResponse{
 			ErrCode: config_backend.ErrorCode_SUCCESS,
-			ErrMsg:  err.Error(),
 		},
 		Value: *value,
+	}
+	if err != nil {
+		resp.BaseResponse.ErrMsg = err.Error()
 	}
 
 	return resp, nil
 }
 
 func (c *ConfigBackendServiceImpl) PutConfig(ctx context.Context, req *config_backend.PutConfigRequest) (*config_backend.PutConfigResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	errCode := config_backend.ErrorCode_SUCCESS
+	errMsg := ""
+	if err := c.ConfigOperator.Put(ctx, req.ServiceId, req.ServiceKey, req.Key, req.Value); err != nil {
+		errCode = config_backend.ErrorCode_ERR_INTERNAL_SERVER_ERROR
+		errMsg = err.Error()
+	}
+
+	return &config_backend.PutConfigResponse{
+		BaseResponse: &config_backend.BaseResponse{
+			ErrCode: errCode,
+			ErrMsg:  errMsg,
+		},
+	}, nil
 }

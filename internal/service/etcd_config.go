@@ -24,13 +24,10 @@ var (
 )
 
 func (E *ETCDConfigOperator) Get(ctx context.Context, serviceID, serviceKey, key string) (*string, error) {
-	serviceEntity, err := E.ServiceDao.Get(ctx, serviceID)
-	if err != nil {
+	if err := E.validateService(ctx, serviceID, serviceKey); err != nil {
 		return nil, err
 	}
-	if serviceEntity.Key != serviceKey {
-		return nil, ErrMismatchServiceKey
-	}
+
 	resp, err := E.ETCDClient.Get(ctx, E.configKey(serviceID, key))
 	if err != nil {
 		return nil, err
@@ -43,8 +40,23 @@ func (E *ETCDConfigOperator) Get(ctx context.Context, serviceID, serviceKey, key
 }
 
 func (E *ETCDConfigOperator) Put(ctx context.Context, serviceID, serviceKey, key, value string) error {
-	//TODO implement me
-	panic("implement me")
+	if err := E.validateService(ctx, serviceID, serviceKey); err != nil {
+		return err
+	}
+	_, err := E.ETCDClient.Put(ctx, E.configKey(serviceID, key), value)
+	return err
+}
+
+func (E *ETCDConfigOperator) validateService(ctx context.Context, serviceID, serviceKey string) error {
+	serviceEntity, err := E.ServiceDao.Get(ctx, serviceID)
+	if err != nil {
+		return err
+	}
+	if serviceEntity.Key != serviceKey {
+		return ErrMismatchServiceKey
+	}
+
+	return nil
 }
 
 func (E *ETCDConfigOperator) configKey(serviceID, key string) string {
