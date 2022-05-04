@@ -24,8 +24,9 @@ func main() {
 	etcd.MustInitETCDClient()
 	config_backend.RegisterConfigBackendService(&handler.ConfigBackendServiceImpl{
 		ConfigOperator: &service.ETCDConfigOperator{
-			ServiceDao: &model.ServiceDaoMysqlImpl{},
-			ETCDClient: etcd.GetClient(),
+			ServiceConfigKeyDao: &model.DefaultServiceConfigKeyDao{},
+			ServiceDao:          &model.DefaultServiceDao{},
+			ETCDClient:          etcd.GetClient(),
 		},
 	})
 	server := config_backend.GetServer()
