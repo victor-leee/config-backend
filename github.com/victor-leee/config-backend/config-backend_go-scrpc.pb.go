@@ -23,6 +23,7 @@ func GetServer() scrpc.Server {
 type ConfigBackendService interface {
 	GetConfig(ctx context.Context, req *GetConfigRequest) (*GetConfigResponse, error)
 	PutConfig(ctx context.Context, req *PutConfigRequest) (*PutConfigResponse, error)
+	GetAllKeys(ctx context.Context, req *GetAllKeysRequest) (*GetAllKeysResponse, error)
 }
 
 func RegisterConfigBackendService(handler ConfigBackendService) {
@@ -39,5 +40,12 @@ func RegisterConfigBackendService(handler ConfigBackendService) {
 			return nil, unmarshalErr
 		}
 		return handler.PutConfig(context.Background(), req)
+	})
+	server.RegisterHandler("GetAllKeys", func(b []byte) (proto.Message, error) {
+		req := &GetAllKeysRequest{}
+		if unmarshalErr := proto.Unmarshal(b, req); unmarshalErr != nil {
+			return nil, unmarshalErr
+		}
+		return handler.GetAllKeys(context.Background(), req)
 	})
 }
