@@ -12,7 +12,11 @@ var (
 
 type Service struct {
 	ServiceID  string `json:"serviceID" gorm:"column:complete_path"`
-	ServiceKey string `json:"serviceKey" gorm:"column:serviceKey"`
+	ServiceKey string `json:"serviceKey" gorm:"column:service_key"`
+}
+
+func (s *Service) TableName() string {
+	return "service_tab"
 }
 
 type ServiceDao interface {
@@ -25,7 +29,7 @@ type DefaultServiceDao struct {
 func (d *DefaultServiceDao) Get(ctx context.Context, serviceID string) (*Service, error) {
 	s := &Service{}
 	whereMap := map[string]interface{}{
-		"unique_complete_path": serviceID,
+		"complete_path": serviceID,
 	}
 	if err := GetDatabase(ctx).Model(s).Where(whereMap).First(s).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

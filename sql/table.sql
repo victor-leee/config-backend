@@ -13,7 +13,7 @@ create table service_tab (
 ) comment 'rpc service meta tab'
 
 create table service_config_key_tab (
-    id int auto_increment primary key comment 'auto inc id',
-    service_id varchar(767) comment 'refers to service_tab.complete_path',
-    key varchar(767) comment 'config key'
+    `id` int auto_increment primary key comment 'auto inc id',
+    `service_id` varchar(767) comment 'refers to service_tab.complete_path',
+    `key` varchar(767) comment 'config key'
 ) comment 'store config keys for each service'
