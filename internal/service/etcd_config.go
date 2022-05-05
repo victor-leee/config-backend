@@ -64,7 +64,7 @@ func (E *ETCDConfigOperator) Keys(ctx context.Context, serviceID, serviceKey str
 		keys[i] = E.refineOriginalKey(k)
 	}
 
-	return keys, nil
+	return E.distinctKeys(keys), nil
 }
 
 func (E *ETCDConfigOperator) validateService(ctx context.Context, serviceID, serviceKey string) error {
@@ -86,4 +86,20 @@ func (E *ETCDConfigOperator) configKey(keys ...string) string {
 func (E *ETCDConfigOperator) refineOriginalKey(mixKey string) string {
 	keys := strings.Split(mixKey, ".")
 	return keys[1]
+}
+
+func (E *ETCDConfigOperator) distinctKeys(keys []string) []string {
+	m := make(map[string]struct{})
+	for _, key := range keys {
+		if _, ok := m[key]; !ok {
+			m[key] = struct{}{}
+		}
+	}
+
+	res := make([]string, 0, len(keys))
+	for key, _ := range m {
+		res = append(res, key)
+	}
+
+	return res
 }

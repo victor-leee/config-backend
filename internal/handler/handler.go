@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/victor-leee/config-backend/github.com/victor-leee/config-backend"
 	"github.com/victor-leee/config-backend/internal/service"
-	"google.golang.org/protobuf/proto"
 )
 
 type ConfigBackendServiceImpl struct {
@@ -28,14 +27,14 @@ func (c *ConfigBackendServiceImpl) GetAllKeys(ctx context.Context, req *config_b
 
 func (c *ConfigBackendServiceImpl) GetConfig(ctx context.Context, req *config_backend.GetConfigRequest) (*config_backend.GetConfigResponse, error) {
 	value, err := c.ConfigOperator.Get(ctx, req.ServiceId, req.ServiceKey, req.Key)
-	if value == nil {
-		value = proto.String("")
-	}
 	resp := &config_backend.GetConfigResponse{
 		BaseResponse: &config_backend.BaseResponse{
 			ErrCode: config_backend.ErrorCode_SUCCESS,
 		},
-		Value: *value,
+		KeyExist: value != nil,
+	}
+	if resp.KeyExist {
+		resp.Value = *value
 	}
 	if err != nil {
 		resp.BaseResponse.ErrMsg = err.Error()
